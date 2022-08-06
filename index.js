@@ -51,6 +51,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(
   cors({
+    httpsOnly: true,
     origin: "http://localhost:3000",
     // origin: "https://tasky-social-network.herokuapp.com",
     methods: ["POST", "PUT", "GET", "DELETE"],
