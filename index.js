@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-const session = require("express-session");
+// const session = require("express-session");
+const session = require("cookie-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -56,24 +57,24 @@ app.use(
   })
 );
 
+app.listen(PORT, () => {
+  console.log(`Listening on Port ${PORT}.`);
+});
+
 app.use("/users", UserRoutes);
 app.use("/tasks", TaskRoutes);
 app.use("/threads", ThreadRoutes);
 
 // for production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/client/build")));
-  app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.send("Tasky Backend is Running");
-  });
-}
-
-app.listen(PORT, () => {
-  console.log(`Listening on Port ${PORT}.`);
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "/client/build")));
+//   app.get("/", (req, res) => {
+//     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+//   });
+// } else {
+app.get("/", (req, res) => {
+  res.send("Tasky Backend Running");
 });
+// }
 
 module.exports = app;
