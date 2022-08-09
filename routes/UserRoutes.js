@@ -53,7 +53,7 @@ router.post("/search", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const userId = req.params.id;
   try {
-    const user = await User.findById(userId);
+    let user = await User.findById(userId);
     user = user.toObject();
     delete user.passwordHash;
     delete user.contacts;
@@ -73,7 +73,7 @@ router.post("/profile", async (req, res) => {
   //   "/profile reached with userID: " + userID + " and profileID: " + profileID
   // );
   try {
-    const profile = await User.findById(profileID);
+    let profile = await User.findById(profileID);
     const sentTasks = await Task.find({
       owner: userID,
       recipients: profileID,
@@ -127,7 +127,7 @@ router.post("/signin", async (req, res) => {
   // console.log("signed in successfully, req.user: ", req.user);
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  let user = await User.findOne({ email });
 
   if (user) {
     const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
@@ -157,7 +157,7 @@ router.post("/logout", (req, res) => {
 
 router.post("/toggleContact", sendNotification_contact, async (req, res) => {
   const { userID, contactID, contactName } = req.body;
-  const user = await User.findById(userID);
+  let user = await User.findById(userID);
 
   if (user.contacts.find((obj) => obj.id === contactID)) {
     // console.log("contact already exists,", contactName);
@@ -191,7 +191,7 @@ router.post("/getNotifications", async (req, res) => {
 
 router.post("/deleteNotification", async (req, res) => {
   // console.log("delete body: ", req.body);
-  const user = await User.findById(req.body.userID);
+  let user = await User.findById(req.body.userID);
   user.notifications = user.notifications.filter((notif) => {
     return notif._id != req.body.notif_ID;
   });
@@ -216,7 +216,7 @@ router.post("/settings", async (req, res) => {
     contactNotifications,
   } = req.body;
   // console.log(req.body);
-  const user = await User.findById(userID);
+  let user = await User.findById(userID);
   if (user) {
     user.name = name;
     user.bio = bio;
