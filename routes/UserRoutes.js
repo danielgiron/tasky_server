@@ -109,10 +109,11 @@ router.post("/poll", async (req, res) => {
   res.send(user);
 });
 
-router.post("/signin", passport.authenticate("local"), async (req, res) => {
+router.post("/signin", async (req, res) => {
   // console.log("signed in successfully, req.user: ", req.user);
 
-  res.send(req.user);
+  // res.send(req.user);
+  res.send("signin route reached with body: ", req.body);
 });
 
 router.post("/logout", (req, res) => {
