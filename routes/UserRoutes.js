@@ -18,33 +18,45 @@ router.post("/search", async (req, res) => {
   users = await User.find({ name: { $regex: req.body.name, $options: "i" } });
 
   if (users) {
-    res.status(200).send(users);
+    const users_trimmed = users.map((user) => {
+      delete user.passwordHash;
+      delete user.contacts;
+      delete user.notifications;
+      delete user.settings;
+      delete user.session;
+    });
+    res.status(200).send(users_trimmed);
   } else {
     res.status(404).send("No users found");
   }
 });
 
 //new user
-router.post("/", async (req, res) => {
-  const userData = req.body;
-  // console.log(userData);
-  try {
-    const newUser = new User({
-      email: userData.email,
-      name: userData.name,
-    });
-    await newUser.save();
-    res.status(200).send(newUser);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// router.post("/", async (req, res) => {
+//   const userData = req.body;
+//   // console.log(userData);
+//   try {
+//     const newUser = new User({
+//       email: userData.email,
+//       name: userData.name,
+//     });
+//     await newUser.save();
+//     res.status(200).send(newUser);
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// });
 
 //get user by id
 router.get("/:id", async (req, res) => {
   const userId = req.params.id;
   try {
     const user = await User.findById(userId);
+    delete user.passwordHash;
+    delete user.contacts;
+    delete user.notifications;
+    delete user.settings;
+    delete user.session;
     res.status(200).send(user);
   } catch (err) {
     res.status(500).send(err);
@@ -72,6 +84,11 @@ router.post("/profile", async (req, res) => {
       .populate("owner")
       .populate("recipients");
     // console.log({ sentTasks, receivedTasks });
+    delete profile.passwordHash;
+    delete profile.contacts;
+    delete profile.notifications;
+    delete profile.settings;
+    delete profile.session;
     res.send({ profile, sentTasks, receivedTasks });
   } catch (err) {
     console.log(err);
@@ -82,17 +99,10 @@ router.post("/profile", async (req, res) => {
 router.post("/signup", async (req, res) => {
   const { email, name, password } = req.body;
   try {
-    // const registeredUser = await User.register(user, password);
-    // req.session.user = registeredUser;
-    // console.log("registeredUser", registeredUser);
-    // res.send(req.session.user);
-
     const passwordSalt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, passwordSalt);
 
     const session = uuidv4();
-    // const sessionSalt = await bcrypt.genSalt(10);
-    // const sessionHash = await bcrypt.hash(session, sessionSalt);
 
     const newUser = new User({ email, name, passwordHash, session });
     await newUser.save();
@@ -119,6 +129,12 @@ router.post("/signin", async (req, res) => {
     const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
     if (isPasswordMatch) {
       user.session = uuidv4();
+      await user.save();
+      delete user.passwordHash;
+      delete user.contacts;
+      // delete user.notifications;
+      // delete user.settings;
+      // delete user.session;
       res.send(user);
     } else {
       res.send({ error: "Invalid email or password" });
@@ -147,6 +163,13 @@ router.post("/toggleContact", sendNotification_contact, async (req, res) => {
   }
 
   await user.save();
+
+  delete user.passwordHash;
+  delete user.contacts;
+  delete user.notifications;
+  delete user.settings;
+  delete user.session;
+
   res.status(200).send(user);
 });
 
@@ -168,6 +191,13 @@ router.post("/deleteNotification", async (req, res) => {
     return notif._id != req.body.notif_ID;
   });
   await user.save();
+
+  delete user.passwordHash;
+  delete user.contacts;
+  // delete user.notifications;
+  delete user.settings;
+  delete user.session;
+
   res.send(user);
 });
 
@@ -192,6 +222,12 @@ router.post("/settings", async (req, res) => {
     };
     await user.save();
   }
+
+  // delete user.passwordHash;
+  // delete user.contacts;
+  // delete user.notifications;
+  delete user.settings;
+  // delete user.session;
   res.send(user);
 });
 
