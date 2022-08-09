@@ -111,9 +111,22 @@ router.post("/poll", async (req, res) => {
 
 router.post("/signin", async (req, res) => {
   // console.log("signed in successfully, req.user: ", req.user);
+  const { email, password } = req.body;
 
-  // res.send(req.user);
-  res.send("signin route reached with body: ", req.body);
+  const user = await User.findOne({ email });
+
+  if (user) {
+    const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
+    if (isPasswordMatch) {
+      res.send(user);
+    } else {
+      res.send("Invalid email or password");
+    }
+  } else {
+    res.send("Invalid email or password");
+  }
+
+  // res.send("signin route reached with body: ", req.body);
 });
 
 router.post("/logout", (req, res) => {
