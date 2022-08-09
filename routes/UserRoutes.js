@@ -122,7 +122,7 @@ router.post("/signup", async (req, res) => {
 
 router.post("/poll", async (req, res) => {
   const { userID, session } = req.body;
-  const user = await User.findOne({ _id: userID, session });
+  const user = await User.findOne({ _id: userID });
   res.send(user);
 });
 
