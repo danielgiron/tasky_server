@@ -33,7 +33,8 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    // httpOnly: false,
+    httpOnly: false,
+    domain: "taskysocialnetwork.netlify.app",
     secure: true,
     sameSite: "none",
     maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -67,16 +68,8 @@ app.use("/users", UserRoutes);
 app.use("/tasks", TaskRoutes);
 app.use("/threads", ThreadRoutes);
 
-// for production
-// if (process.env.NODE_ENV === "production") {
-//   app.use(express.static(path.join(__dirname, "/client/build")));
-//   app.get("/", (req, res) => {
-//     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-//   });
-// } else {
 app.get("/", (req, res) => {
   res.send("Tasky Backend Running");
 });
-// }
 
 module.exports = app;
