@@ -157,7 +157,9 @@ router.post("/logout", async (req, res) => {
   // req.logout(() => {});
   const { userID } = req.body;
   const user = await User.findById(userID);
-  user.session = "none";
+  if (user) {
+    user.session = "none";
+  }
   res.status(200).send("logged out");
 });
 
