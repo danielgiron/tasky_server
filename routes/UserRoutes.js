@@ -94,7 +94,8 @@ router.post("/signup", async (req, res) => {
 
     const newUser = new User({ email, name, passwordHash, session });
     await newUser.save();
-    res.send(newUser);
+    // res.send(newUser);
+    res.send("new user route reached with body: ", req.body);
   } catch (err) {
     console.log(err);
     res.send(err);
