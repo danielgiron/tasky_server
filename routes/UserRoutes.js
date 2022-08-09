@@ -180,7 +180,7 @@ router.post("/toggleContact", sendNotification_contact, async (req, res) => {
   delete user.passwordHash;
   // delete user.contacts;
   // delete user.notifications;
-  delete user.settings;
+  // delete user.settings;
   delete user.session;
 
   res.status(200).send(user);
@@ -298,7 +298,7 @@ router.post("/deleteUser", async (req, res) => {
     // console.log("Deleted User and Logged out successfully");
     res.status(200).send(deletedUser);
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send({ error: e });
     console.log("Failed to delete User", e);
   }
 });
