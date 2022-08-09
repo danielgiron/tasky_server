@@ -21,7 +21,7 @@ router.post("/search", async (req, res) => {
     const users_trimmed = users.map((user) => {
       user = user.toObject();
       delete user.passwordHash;
-      delete user.contacts;
+      // delete user.contacts;
       delete user.notifications;
       delete user.settings;
       delete user.session;
@@ -89,7 +89,7 @@ router.post("/profile", async (req, res) => {
     // console.log({ sentTasks, receivedTasks });
     profile = profile.toObject();
     delete profile.passwordHash;
-    delete profile.contacts;
+    // delete profile.contacts;
     delete profile.notifications;
     delete profile.settings;
     delete profile.session;
@@ -139,7 +139,7 @@ router.post("/signin", async (req, res) => {
       await user.save();
       user = user.toObject();
       delete user.passwordHash;
-      delete user.contacts;
+      // delete user.contacts;
       // delete user.notifications;
       // delete user.settings;
       // delete user.session;
@@ -178,8 +178,8 @@ router.post("/toggleContact", sendNotification_contact, async (req, res) => {
   await user.save();
   user = user.toObject();
   delete user.passwordHash;
-  delete user.contacts;
-  delete user.notifications;
+  // delete user.contacts;
+  // delete user.notifications;
   delete user.settings;
   delete user.session;
 
@@ -206,9 +206,9 @@ router.post("/deleteNotification", async (req, res) => {
   await user.save();
   user = user.toObject();
   delete user.passwordHash;
-  delete user.contacts;
+  // delete user.contacts;
   // delete user.notifications;
-  delete user.settings;
+  // delete user.settings;
   delete user.session;
 
   res.send(user);
@@ -237,8 +237,8 @@ router.post("/settings", async (req, res) => {
   }
 
   delete user.passwordHash;
-  delete user.contacts;
-  delete user.notifications;
+  // delete user.contacts;
+  // delete user.notifications;
   // delete user.settings;
   delete user.session;
   res.send(user);
