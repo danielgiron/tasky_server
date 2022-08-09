@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 const bcrypt = require("bcrypt");
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
+const uuidv4 = require("uuid/v4");
 const User = require("../models/User");
 const Task = require("../models/Task");
 const Thread = require("../models/Thread");
