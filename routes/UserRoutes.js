@@ -108,8 +108,10 @@ router.post("/signup", async (req, res) => {
 
     const session = uuidv4();
 
-    const newUser = new User({ email, name, passwordHash, session });
+    let newUser = new User({ email, name, passwordHash, session });
     await newUser.save();
+    newUser = newUser.toObject();
+    delete newUser.passwordHash;
     res.send(newUser);
     // res.send("new user route reached with body: ", req.body);
   } catch (err) {
@@ -119,7 +121,8 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/poll", async (req, res) => {
-  const user = await User.findById(req.body.userID);
+  const { userID, session } = req.body;
+  const user = await User.findOne({ _id: userID, session });
   res.send(user);
 });
 
@@ -149,9 +152,12 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.post("/logout", (req, res) => {
+router.post("/logout", async (req, res) => {
   // console.log("logout route reached");
   // req.logout(() => {});
+  const { userID } = req.body;
+  const user = await User.findById(userID);
+  user.session = "terminated";
   res.status(200).send("logged out");
 });
 
