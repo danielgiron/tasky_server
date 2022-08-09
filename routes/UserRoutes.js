@@ -19,11 +19,13 @@ router.post("/search", async (req, res) => {
 
   if (users) {
     const users_trimmed = users.map((user) => {
+      user = user.toObject();
       delete user.passwordHash;
       delete user.contacts;
       delete user.notifications;
       delete user.settings;
       delete user.session;
+      return user;
     });
     res.status(200).send(users_trimmed);
   } else {
@@ -52,6 +54,7 @@ router.get("/:id", async (req, res) => {
   const userId = req.params.id;
   try {
     const user = await User.findById(userId);
+    user = user.toObject();
     delete user.passwordHash;
     delete user.contacts;
     delete user.notifications;
@@ -84,6 +87,7 @@ router.post("/profile", async (req, res) => {
       .populate("owner")
       .populate("recipients");
     // console.log({ sentTasks, receivedTasks });
+    profile = profile.toObject();
     delete profile.passwordHash;
     delete profile.contacts;
     delete profile.notifications;
@@ -130,6 +134,7 @@ router.post("/signin", async (req, res) => {
     if (isPasswordMatch) {
       user.session = uuidv4();
       await user.save();
+      user = user.toObject();
       delete user.passwordHash;
       delete user.contacts;
       // delete user.notifications;
@@ -163,7 +168,7 @@ router.post("/toggleContact", sendNotification_contact, async (req, res) => {
   }
 
   await user.save();
-
+  user = user.toObject();
   delete user.passwordHash;
   delete user.contacts;
   delete user.notifications;
@@ -191,7 +196,7 @@ router.post("/deleteNotification", async (req, res) => {
     return notif._id != req.body.notif_ID;
   });
   await user.save();
-
+  user = user.toObject();
   delete user.passwordHash;
   delete user.contacts;
   // delete user.notifications;
@@ -223,11 +228,11 @@ router.post("/settings", async (req, res) => {
     await user.save();
   }
 
-  // delete user.passwordHash;
-  // delete user.contacts;
-  // delete user.notifications;
-  delete user.settings;
-  // delete user.session;
+  delete user.passwordHash;
+  delete user.contacts;
+  delete user.notifications;
+  // delete user.settings;
+  delete user.session;
   res.send(user);
 });
 
