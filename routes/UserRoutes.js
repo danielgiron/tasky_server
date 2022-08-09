@@ -22,21 +22,21 @@ router.post("/search", async (req, res) => {
   }
 });
 
-// //new user
-// router.post("/", async (req, res) => {
-//   const userData = req.body;
-//   // console.log(userData);
-//   try {
-//     const newUser = new User({
-//       email: userData.email,
-//       name: userData.name,
-//     });
-//     await newUser.save();
-//     res.status(200).send(newUser);
-//   } catch (err) {
-//     res.status(500).send(err);
-//   }
-// });
+//new user
+router.post("/", async (req, res) => {
+  const userData = req.body;
+  // console.log(userData);
+  try {
+    const newUser = new User({
+      email: userData.email,
+      name: userData.name,
+    });
+    await newUser.save();
+    res.status(200).send(newUser);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 //get user by id
 router.get("/:id", async (req, res) => {
