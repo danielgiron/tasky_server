@@ -3,13 +3,13 @@ const app = express();
 // const session = require("express-session");
 const session = require("cookie-session");
 const mongoose = require("mongoose");
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
+// const passport = require("passport");
+// const LocalStrategy = require("passport-local");
 const dotenv = require("dotenv");
 // const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
-const User = require("./models/User");
+// const User = require("./models/User");
 const UserRoutes = require("./routes/UserRoutes");
 const TaskRoutes = require("./routes/TaskRoutes");
 const ThreadRoutes = require("./routes/ThreadRoutes");
@@ -44,11 +44,11 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.set("trust proxy", 1);
 
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(new LocalStrategy(User.authenticate()));
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 app.use(
   cors({
