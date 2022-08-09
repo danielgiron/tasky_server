@@ -115,20 +115,14 @@ router.post("/signin", async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  // if (user) {
-  const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
-  //   if (isPasswordMatch) {
-  //     res.send(user);
-  //   } else {
-  //     res.send("Invalid email or password");
-  //   }
-  // } else {
-  //   res.send("Invalid email or password");
-  // }
-
-  if (user && isPasswordMatch) {
-    user.session = uuidv4();
-    res.send(user);
+  if (user) {
+    const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
+    if (isPasswordMatch) {
+      user.session = uuidv4();
+      res.send(user);
+    } else {
+      res.send({ error: "Invalid email or password" });
+    }
   } else {
     res.send({ error: "Invalid email or password" });
   }
