@@ -293,7 +293,6 @@ router.post("/deleteUser", async (req, res) => {
       await contactee.save();
     });
 
-    req.logout(() => {});
     const deletedUser = await User.findByIdAndDelete(userID);
     // console.log("Deleted User and Logged out successfully");
     res.status(200).send(deletedUser);
