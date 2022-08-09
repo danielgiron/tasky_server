@@ -14,6 +14,8 @@ const UserSchema = new mongoose.Schema(
     name: { type: String, required: true },
     bio: { type: String, default: "Welcome to my profile!" },
     dateJoined: { type: Date, default: Date.now },
+    session: { type: String, default: "" },
+    passwordHash: { type: String, default: "" },
     contacts: [{ type: Object, ref: "User" }],
     settings: {
       taskNotifications: { type: Boolean, default: true },
@@ -40,7 +42,7 @@ const UserSchema = new mongoose.Schema(
   { minimize: false }
 );
 
-UserSchema.plugin(passportLocalMongoose, { usernameField: "email" });
+// UserSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
+const bcrypt = require("bcrypt");
+import { v4 as uuidv4 } from "uuid";
 const User = require("../models/User");
 const Task = require("../models/Task");
 const Thread = require("../models/Thread");
 
-const passport = require("passport");
+// const passport = require("passport");
 
 const { sendNotification_contact } = require("../Middleware");
 
@@ -20,21 +22,21 @@ router.post("/search", async (req, res) => {
   }
 });
 
-//new user
-router.post("/", async (req, res) => {
-  const userData = req.body;
-  // console.log(userData);
-  try {
-    const newUser = new User({
-      email: userData.email,
-      name: userData.name,
-    });
-    await newUser.save();
-    res.status(200).send(newUser);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// //new user
+// router.post("/", async (req, res) => {
+//   const userData = req.body;
+//   // console.log(userData);
+//   try {
+//     const newUser = new User({
+//       email: userData.email,
+//       name: userData.name,
+//     });
+//     await newUser.save();
+//     res.status(200).send(newUser);
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// });
 
 //get user by id
 router.get("/:id", async (req, res) => {
@@ -47,6 +49,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// used to return profile data on Profile.js
 router.post("/profile", async (req, res) => {
   const { userID, profileID } = req.body;
   // console.log(
@@ -76,12 +79,22 @@ router.post("/profile", async (req, res) => {
 
 router.post("/signup", async (req, res) => {
   const { email, name, password } = req.body;
-  const user = new User({ email, name, password });
   try {
-    const registeredUser = await User.register(user, password);
-    req.session.user = registeredUser;
+    // const registeredUser = await User.register(user, password);
+    // req.session.user = registeredUser;
     // console.log("registeredUser", registeredUser);
-    res.send(req.session.user);
+    // res.send(req.session.user);
+
+    const passwordSalt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, passwordSalt);
+
+    const session = uuidv4();
+    // const sessionSalt = await bcrypt.genSalt(10);
+    // const sessionHash = await bcrypt.hash(session, sessionSalt);
+
+    const newUser = new User({ email, name, passwordHash, session });
+    await newUser.save();
+    res.send(newUser);
   } catch (err) {
     console.log(err);
     res.send(err);
@@ -101,7 +114,7 @@ router.post("/signin", passport.authenticate("local"), async (req, res) => {
 
 router.post("/logout", (req, res) => {
   // console.log("logout route reached");
-  req.logout(() => {});
+  // req.logout(() => {});
   res.status(200).send("logged out");
 });
 
@@ -192,8 +205,6 @@ router.post("/deleteUser", async (req, res) => {
     userThreads.forEach(async (thread) => {
       try {
         await Thread.findByIdAndDelete(thread._id);
-        // thread.parties = thread.parties.filter((party) => party.id !== userID);
-        // await thread.save();
       } catch (e) {
         console.log(`Failed to delete thread: ${thread._id}`, e);
       }
